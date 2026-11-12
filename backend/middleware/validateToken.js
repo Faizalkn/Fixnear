@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const validate = (req, res, next) => {
-    const authHead =
-        req.headers.authorization;
+    const authHead = req.headers.authorization;
 
     if (!authHead || !authHead.startsWith("Bearer ")) {
         const error = new Error("Please login to access");
@@ -23,14 +22,16 @@ const validate = (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
             if (err) {
-                const error = new Error(
-                    "Invalid or expired token. Please login again"
-                );
+                const error = new Error("Invalid or expired token");
                 error.statusCode = 401;
                 return next(error);
             }
 
-            req.user = decoded.userId;
+            req.user = {
+                userId: decoded.userId,
+                role: decoded.role
+            };
+
             next();
         }
     );
