@@ -17,8 +17,8 @@ app.use(cors({
         origin:"http://localhost:5173" // allowd port
     }))
 app.use(express.json())
-
-app.use('/api/reg',require('./routes/Regrouter'))
+app.use(express.urlencoded({ extended: true }));
+app.use('/api',require('./routes/Regrouter'))
 
 app.use(errorHandler)
 

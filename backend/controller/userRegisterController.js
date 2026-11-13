@@ -1,23 +1,19 @@
 const bcrypt=require('bcrypt')
-const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel')
 
 
 const registerPostData = async(req,res,next)=>{
 try {
-    const{name,address,state,district,village,city,pincode,profilepic,idproof,phone,email,password}=req.body
+    const{name,address,state,district,village,city,pincode,phone,email,password}=req.body
+    const profilepic = req.files?.profilepic?.[0]?.filename
+    const idproof = req.files?.idproof?.[0]?.filename
 
 //cheking all inputs enterd or not
-if (!name || !address || !state || !district || !village || !city || !pincode ||!idproof || !phone || !email || !password) {
+if (!name || !address || !state || !district || !village || !city || !pincode || !profilepic || !idproof || !phone || !email || !password) {
   const error = new Error("Please enter all inputs");
   error.statusCode = 400;
   throw error;
   };
-  if (!idproof) {
-  const error = new Error("Please upload your ID proof");
-  error.statusCode = 400;
-  throw error;
-}
 // Name
 if (!/^[a-zA-Z\s]+$/.test(name)) {
   const error = new Error("Invalid name");
@@ -42,32 +38,19 @@ if (address.trim().length < 5) {
       throw error;
     }
 
-    // Pincode
-    if (!/^[1-9][0-9]{5}$/.test(String(pincode))) {
+// Pincode
+if (!/^[1-9][0-9]{5}$/.test(String(pincode))) {
       const error = new Error("Pincode must be 6 digits");
       error.statusCode = 400;
       throw error;
     }
 
-    // Phone
-    if (!/^[6-9][0-9]{9}$/.test(String(phone))) {
+// Phone
+if (!/^[6-9][0-9]{9}$/.test(String(phone))) {
       const error = new Error("Invalid 10-digit phone number");
       error.statusCode = 400;
       throw error;
     }
-// Pincode (6 digits)
-if (!/^[1-9][0-9]{5}$/.test(pincode)) {
-   const error = new Error("Pincode must be 6 digits");
-      error.statusCode = 400;
-      throw error;
-    }
-// Phone (Indian 10-digit number)
-if (!/^[6-9][0-9]{9}$/.test(phone)) {
-   const error = new Error("Invalid 10-digit phone number");
-      error.statusCode = 400;
-      throw error;
-    }
-
 // Email
 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
   const error = new Error("Invalid email address");
@@ -82,15 +65,21 @@ if (password.length < 8) {
       throw error;
     }
 
-const hashedPassword = await bcrypt.hash(password, 10);
-const existingUser = await userModel.findOne({ email: email });
+const existingUser = await userModel.findOne({
+  $or: [{ email: email.toLowerCase() }, { phone: Number(phone) }],
+});
 if (existingUser) {
-  const error = new Error("Email already exists");
+  const error = new Error(
+    existingUser.email === email.toLowerCase()
+      ? "Email already exists"
+      : "Phone number already exists"
+  );
       error.statusCode = 409;
       throw error;
     }
 
-await userModel.create({name:name,address:address,state:state,district:district,village:village,city:city,pincode:pincode,profilepic:profilepic,idproof:idproof,phone:phone,email:email,password:hashedPassword})
+const hashedPassword = await bcrypt.hash(password, 10);
+await userModel.create({name,address,state,district,village,city,pincode,profilepic,idproof,phone,email:email.toLowerCase(),password:hashedPassword})
 return res.status(201).json({
       success: true,
       message: "Registration successful"

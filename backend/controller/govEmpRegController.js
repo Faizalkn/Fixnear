@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const governmentEmployeeModel = require('../models/govEmployeeModel');
 
-const empRegGetData = async (req, res, next) => {
+const empRegPostData = async (req, res, next) => {
   try {
     const {
       name,
@@ -136,4 +136,4 @@ return res.status(201).json({
   }
 };
 
-module.exports = { empRegGetData };
+module.exports = { empRegPostData };

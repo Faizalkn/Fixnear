@@ -2,10 +2,17 @@ const express = require('express')
 const router = express.Router()
 const {registerPostData} = require('../controller/userRegisterController')
 const{loginPostData} =require('../controller/loginController')
-const {empRegGetData} = require('../controller/govEmpRegController')
+const {empRegPostData} = require('../controller/govEmpRegController')
+const userUpload = require('../middleware/regMulter')
 
-router.route('/userreg') .post(registerPostData)
-router.route('/employeereg').post(empRegGetData)
+router.route('/reg').post(
+    userUpload.fields([
+        { name: 'profilepic', maxCount: 1 },
+        { name: 'idproof', maxCount: 1 },
+    ]),
+    registerPostData
+)
+router.route('/employeereg').post(empRegPostData)
 router.route('/login').post(loginPostData)
 
 
