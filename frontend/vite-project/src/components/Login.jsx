@@ -16,27 +16,39 @@ const Login = () => {
     setError("");
     setLoading(true);
 
-    try {
-      const res = await axios.post("http://localhost:5000/api/login", {
-        email: email,
-        password: password,
-      });
-
-      // Store the access token returned by your backend
-      localStorage.setItem("accessToken", res.data.accessToken);
-
-      // Navigate after successful login
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password");
-    } finally {
-      setLoading(false);
+  try {
+  const res = await axios.post(
+    "http://localhost:5000/api/login",
+    {
+      email: email,
+      password: password,
     }
+  );
+
+  if (res.data.accessToken) {
+    localStorage.setItem("accessToken", res.data.accessToken);
+    navigate("/");
+  } else {
+    setError("Access token was not received from the server.");
+  }
+} catch (err) {
+  setError(
+    err.response?.data?.message || "Invalid email or password"
+  );
+} finally {
+  setLoading(false);
+}
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
+        <Link to="/" className="login-brand" aria-label="Fixnear home">
+          <span className="login-brand-icon" aria-hidden="true">F</span>
+          <span>
+            Fix<span className="login-brand-highlight">near</span>
+          </span>
+        </Link>
         <h2>Welcome Back</h2>
         <p className="login-subtitle">Login to your Fixnear account</p>
 

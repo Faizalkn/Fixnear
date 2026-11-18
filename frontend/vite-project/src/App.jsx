@@ -1,19 +1,19 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Register from "./components/userRegistration.jsx";
-import Dashboard from "./components/Dashboard.jsx";
-import EmployeRegistraion from "./components/EmployeRegistraion.jsx";
-import "./App.css";
-import Login from "./components/Login.jsx";
+import { Routes, Route, Navigate } from "react-router-dom";
 
+import Register from "./components/userRegistration";
+import EmployeRegistraion from "./components/EmployeRegistraion";
+import Login from "./components/Login";
+import Home from "./components";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/register" replace />} />
+      {/* Public routes */}
+      <Route path="/" element={<Home />}/>
       <Route path="/register" element={<Register />} />
       <Route path="/govempreg" element={<EmployeRegistraion />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="*" element={<Navigate to="/register" replace />} />
+
+      <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

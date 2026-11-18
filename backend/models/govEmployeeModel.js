@@ -62,6 +62,12 @@ const governmentEmployeeSchema = new mongoose.Schema(
 
     idproof: {
       type: String,
+      required: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
     },
   },
   {

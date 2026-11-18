@@ -13,9 +13,9 @@ const empRegPostData = async (req, res, next) => {
       designation,
       office,
       serviceArea,
-      idproof,
       password,
     } = req.body;
+    const idproof = req.files?.idproof?.[0]?.filename;
 
     // Required fields
     if (

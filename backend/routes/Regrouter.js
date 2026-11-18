@@ -4,6 +4,7 @@ const {registerPostData} = require('../controller/userRegisterController')
 const{loginPostData} =require('../controller/loginController')
 const {empRegPostData} = require('../controller/govEmpRegController')
 const userUpload = require('../middleware/regMulter')
+const govEmpUpload = require('../middleware/govEmpMulter')
 
 router.route('/reg').post(
     userUpload.fields([
@@ -12,7 +13,11 @@ router.route('/reg').post(
     ]),
     registerPostData
 )
-router.route('/employeereg').post(empRegPostData)
+router.route('/employeereg').post( govEmpUpload.fields([
+        { name: 'idproof', maxCount: 1 },
+    ]),
+
+    empRegPostData)
 router.route('/login').post(loginPostData)
 
 
