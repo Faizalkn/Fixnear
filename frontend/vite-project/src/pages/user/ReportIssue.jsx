@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import {
   MapContainer,
   TileLayer,
@@ -10,7 +9,7 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./Dashboard.css";
+import UserSidebar from "./UserSidebar";
 import "./ReportIssue.css";
 
 // Leaflet marker icon
@@ -225,42 +224,8 @@ const ReportIssue = () => {
   };
 
   return (
-    <div className="dashboard-container report-dashboard">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-icon">F</div>
-          <h2>FixNear</h2>
-        </div>
-
-        <p className="menu-label">MENU</p>
-        <nav className="navigation">
-          <NavLink to="/user/home" className="nav-link">
-            <span>▦</span> Dashboard
-          </NavLink>
-          <NavLink to="/report-issue" className="nav-link active">
-            <span>＋</span> Report Issues
-          </NavLink>
-          <NavLink to="/my-issues" className="nav-link">
-            <span>▤</span> My Issues
-          </NavLink>
-          <NavLink to="/donation" className="nav-link">
-            <span>♡</span> Donation
-          </NavLink>
-          <NavLink to="/profile" className="nav-link">
-            <span>◉</span> Profile
-          </NavLink>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="help-box">
-            <h4>Need Help?</h4>
-            <p>Contact our support team for assistance.</p>
-            <button type="button">Contact Support</button>
-          </div>
-          <p className="sidebar-footer">© 2026 FixNear</p>
-        </div>
-      </aside>
-
+    <div className="dashboard-container">
+      <UserSidebar />
       <main className="main-content">
         <header className="top-header">
           <div>

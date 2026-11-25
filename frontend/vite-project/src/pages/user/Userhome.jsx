@@ -3,7 +3,7 @@
 
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "./Dashboard.css";
+import UserSidebar from "./UserSidebar";
 
 const issues = [
   {
@@ -81,56 +81,7 @@ const Userhome = () => {
 
   return (
     <div className="dashboard-container">
-
-      {/* Sidebar */}
-      <aside className="sidebar">
-
-        <div className="brand">
-          <div className="brand-icon">F</div>
-          <h2>FixNear</h2>
-        </div>
-
-        <p className="menu-label">MENU</p>
-
-        <nav className="navigation">
-
-          <NavLink
-            to="/user/home"
-            className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
-            }
-          >
-            <span>▦</span> Dashboard
-          </NavLink>
-
-          <NavLink to="/report-issue" className="nav-link">
-            <span>＋</span> Report Issues
-          </NavLink>
-
-          <NavLink to="/my-issues" className="nav-link">
-            <span>▤</span> My Issues
-          </NavLink>
-
-          <NavLink to="/donation" className="nav-link">
-            <span>♡</span> Donation
-          </NavLink>
-
-          <NavLink to="/profile" className="nav-link">
-            <span>◉</span> Profile
-          </NavLink>
-
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="help-box">
-            <h4>Need Help?</h4>
-            <p>Contact our support team for assistance.</p>
-            <button>Contact Support</button>
-          </div>
-          <p className="sidebar-footer">© 2026 FixNear</p>
-        </div>
-
-      </aside>
+      <UserSidebar />
 
       {/* Main Content */}
       <main className="main-content">
