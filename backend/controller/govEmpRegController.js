@@ -104,16 +104,23 @@ const empRegPostData = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const existingUser = await governmentEmployeeModel.findOne({ email: email });
+      const normalizedEmail = email.trim().toLowerCase();
+      const existingUser = await governmentEmployeeModel.findOne({
+        $or: [{ email: normalizedEmail }, { phone: String(phone) }],
+      });
       if (existingUser) {
-        const error = new Error("Email already exists");
+        const error = new Error(
+          existingUser.email === normalizedEmail
+            ? "Email already exists"
+            : "Phone number already exists"
+        );
         error.statusCode = 409;
         throw error;
       }
+      const hashedPassword = await bcrypt.hash(password, 10);
       await governmentEmployeeModel.create({
     name: name,
-    email: email,
+    email: normalizedEmail,
     phone: phone,
     employeeId: employeeId,
     department: department,

@@ -1,7 +1,11 @@
 const errorHandler = (err, req, res, next) => {
     const statusCode = err.statusCode || (err.code === 11000 ? 409 : err.name === "MulterError" ? 400 : 500);
     const message = err.code === 11000
-        ? "Email or phone number already exists"
+        ? ({
+            email: "Email already exists",
+            phone: "Phone number already exists",
+            employeeId: "Employee ID already exists",
+        }[Object.keys(err.keyPattern || err.keyValue || {})[0]] || "A record with the same unique value already exists")
         : err.code === "LIMIT_FILE_SIZE"
             ? "Each uploaded file must be 5 MB or smaller"
             : err.message;

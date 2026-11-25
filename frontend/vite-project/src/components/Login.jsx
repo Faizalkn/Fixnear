@@ -1,7 +1,10 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../Login.css";
+
+const BASE_URL = "http://localhost:5000/";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,45 +19,64 @@ const Login = () => {
     setError("");
     setLoading(true);
 
-  try {
-  const res = await axios.post(
-    "http://localhost:5000/api/login",
-    {
-      email: email,
-      password: password,
-    }
-  );
+    try {
+      const response = await axios.post(
+        `${BASE_URL}api/login`,
+        { email, password }
+      );
 
-  if (res.data.accessToken) {
-    localStorage.setItem("accessToken", res.data.accessToken);
-    navigate("/");
-  } else {
-    setError("Access token was not received from the server.");
-  }
-} catch (err) {
-  setError(
-    err.response?.data?.message || "Invalid email or password"
-  );
-} finally {
-  setLoading(false);
-}
+console.log("Backend response:", response.data);
+
+      const { accessToken, user } = response.data;
+
+      if (!accessToken || !user || !user.role) {
+        setError("Invalid response from server.");
+        return;
+      }
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("role", user.role);
+
+      if (user.role === "USER") {
+        navigate("/user/home");
+
+      } else if (user.role === "GOVERNMENT_EMPLOYEE") {
+        navigate("/employee/home");
+
+      } else if (user.role === "ADMIN") {
+        navigate("/admin/home");
+
+      } else {
+        setError("Invalid user role.");
+      }
+
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Invalid email or password"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
+
         <Link to="/" className="login-brand" aria-label="Fixnear home">
           <span className="login-brand-icon" aria-hidden="true">F</span>
           <span>
             Fix<span className="login-brand-highlight">near</span>
           </span>
         </Link>
+
         <h2>Welcome Back</h2>
         <p className="login-subtitle">Login to your Fixnear account</p>
 
         {error && <div className="login-error">{error}</div>}
 
         <form onSubmit={handleLogin}>
+
           <div className="login-field">
             <label>Email Address</label>
             <input
@@ -80,11 +102,13 @@ const Login = () => {
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
+
         </form>
 
         <p className="register-link">
           Don't have an account? <Link to="/register">Register</Link>
         </p>
+
       </div>
     </div>
   );
